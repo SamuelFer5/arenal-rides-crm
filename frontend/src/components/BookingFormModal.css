@@ -1,0 +1,148 @@
+/* src/components/BookingFormModal.css */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 32, 26, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadein 0.15s ease;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  width: 560px;
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(22, 32, 26, 0.25);
+  animation: slidein 0.18s ease;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 8px;
+}
+
+.modal-header h2 {
+  font-size: 16.5px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal-close {
+  border: none;
+  background: none;
+  font-size: 22px;
+  color: var(--text-faint);
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.modal-close:hover { background: var(--bg-app); }
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: 10px 24px 22px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.booking-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.booking-form label.grow { flex: 2; }
+
+.booking-form input, .booking-form select, .booking-form textarea {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+  font-size: 13px;
+  outline: none;
+  background: var(--bg-app);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.booking-form input:focus, .booking-form select:focus, .booking-form textarea:focus {
+  border-color: var(--accent);
+  background: #fff;
+}
+
+.profit-readonly {
+  font-family: 'Spline Sans Mono', monospace;
+  font-weight: 700;
+  color: #1E7A4C;
+  background: #E5F3EA !important;
+}
+
+.field-hint {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-faint);
+  margin-top: 1px;
+}
+
+.form-success {
+  background: #E5F3EA;
+  color: #1E7A4C;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 9px 11px;
+  border-radius: 8px;
+}
+
+.form-error {
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 9px 11px;
+  border-radius: 8px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.btn-primary, .btn-secondary {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:disabled { opacity: 0.6; }
+
+.btn-secondary {
+  background: var(--bg-app);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}

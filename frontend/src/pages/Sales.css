@@ -1,0 +1,34 @@
+/* src/pages/Sales.css */
+.sales-chart-card, .sales-table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 18px;
+}
+
+.sales-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sales-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-faint-2);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sales-table th.num, .sales-table td.num { text-align: right; }
+
+.sales-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.sales-table tr:last-child td { border-bottom: none; }

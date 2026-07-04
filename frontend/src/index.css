@@ -1,0 +1,69 @@
+/* index.css
+   Estilos globales replicando la identidad visual del prototipo
+   generado en Claude Design para Arenal Rides CRM. */
+
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Spline+Sans+Mono:wght@500;600&display=swap');
+
+:root {
+  --accent: #274C66;
+  --accent-soft: #E7EDF2;
+  --rowpad: 13px;
+
+  --bg-app: #F6F7F3;
+  --bg-card: #ffffff;
+  --border: #E8EAE4;
+  --border-soft: #EFF0EC;
+
+  --text-main: #16201A;
+  --text-muted: #5C675E;
+  --text-faint: #98A199;
+  --text-faint-2: #8A958C;
+
+  --danger-bg: #FBEAEC;
+  --danger-text: #B23A48;
+  --warn-bg: #FBF3E0;
+  --warn-text: #9A7416;
+  --warn-dot: #C99A2E;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+body {
+  font-family: 'Hanken Grotesk', system-ui, sans-serif;
+  background: var(--bg-app);
+  color: var(--text-main);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root { height: 100vh; width: 100%; overflow: hidden; }
+
+input, select, button, textarea { font-family: inherit; }
+
+button { cursor: pointer; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb {
+  background: #D7DCD3;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C2C9BD;
+  background-clip: content-box;
+}
+
+.mono {
+  font-family: 'Spline Sans Mono', monospace;
+}
+
+@keyframes slidein {
+  from { transform: translateX(28px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -1,0 +1,154 @@
+/* src/components/Sidebar.css */
+.sidebar {
+  width: 236px;
+  flex-shrink: 0;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 6px 8px 22px;
+}
+
+.sidebar-logo {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-weight: 700;
+  font-size: 14.5px;
+  letter-spacing: -0.01em;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.sidebar-subtitle {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 38px;
+  padding: 0 10px;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: background 0.12s ease;
+}
+
+.sidebar-link:hover {
+  background: var(--bg-app);
+}
+
+.sidebar-link.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.sidebar-icon {
+  display: flex;
+  width: 20px;
+  justify-content: center;
+  margin-right: 11px;
+  font-size: 13px;
+}
+
+.sidebar-label {
+  flex: 1;
+  text-align: left;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 14px 8px 4px;
+  border-top: 1px solid var(--border-soft);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-userbtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  padding: 4px;
+  border-radius: 9px;
+  text-align: left;
+}
+
+.sidebar-userbtn:hover { background: var(--bg-app); }
+
+.sidebar-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11.5px;
+  flex-shrink: 0;
+}
+
+.sidebar-userinfo {
+  line-height: 1.25;
+  min-width: 0;
+  flex: 1;
+}
+
+.sidebar-username {
+  font-weight: 600;
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-userrole {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.sidebar-logout {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 8px;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-logout:hover {
+  background: var(--bg-app);
+  color: var(--text-muted);
+}
