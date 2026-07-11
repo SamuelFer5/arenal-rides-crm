@@ -27,7 +27,7 @@ async function main() {
       await pool.query(sql);
       console.log(`  OK`);
     } catch (err) {
-      console.error(`  ERROR en ${file}:`, err);
+      console.error(`  ERROR en ${file}:`, err.message);
       await pool.end();
       process.exit(1);
     }

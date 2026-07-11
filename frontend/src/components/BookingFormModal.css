@@ -13,10 +13,11 @@
 .modal-card {
   background: #fff;
   border-radius: 16px;
-  width: 560px;
-  max-width: 92vw;
-  max-height: 88vh;
-  overflow-y: auto;
+  width: 680px;
+  max-width: 95vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 20px 60px rgba(22, 32, 26, 0.25);
   animation: slidein 0.18s ease;
 }
@@ -25,7 +26,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 8px;
+  padding: 20px 24px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  z-index: 2;
 }
 
 .modal-header h2 {
@@ -50,7 +58,9 @@
   display: flex;
   flex-direction: column;
   gap: 13px;
-  padding: 10px 24px 22px;
+  padding: 16px 24px 22px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .form-row {

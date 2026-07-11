@@ -6,6 +6,7 @@
   font-weight: 700;
   padding: 3px 9px;
   border-radius: 100px;
+  white-space: nowrap;
 }
 
 .status-confirmed {
@@ -21,4 +22,9 @@
 .status-canceled {
   background: var(--danger-bg);
   color: var(--danger-text);
+}
+
+.status-incomplete {
+  background: #EAEBE7;
+  color: #6B6B6B;
 }

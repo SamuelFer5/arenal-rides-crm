@@ -1,17 +1,20 @@
 // src/controllers/bookingController.js
 const { bookingService } = require('../services/bookingService');
+const { isComplete } = require('../services/voucherService');
 const asyncHandler = require('../utils/asyncHandler');
 
 const bookingController = {
   list: asyncHandler(async (req, res) => {
     const { month, year } = req.query;
     const bookings = await bookingService.list({ month, year });
-    res.json({ bookings });
+    // Añadir flag de completitud a cada reserva
+    const enriched = bookings.map((b) => ({ ...b, complete: isComplete(b) }));
+    res.json({ bookings: enriched });
   }),
 
   getById: asyncHandler(async (req, res) => {
     const booking = await bookingService.getById(req.params.id);
-    res.json({ booking });
+    res.json({ booking: { ...booking, complete: isComplete(booking) } });
   }),
 
   getByDate: asyncHandler(async (req, res) => {
