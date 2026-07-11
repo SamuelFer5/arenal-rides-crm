@@ -156,3 +156,31 @@
   color: var(--text-muted);
   border: 1px solid var(--border);
 }
+
+.btn-danger {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  background: #B23A48;
+  color: #fff;
+}
+
+.btn-danger:disabled { opacity: 0.6; }
+
+.confirm-modal-card {
+  width: 420px !important;
+}
+
+.confirm-body {
+  padding: 14px 24px 22px;
+}
+
+.confirm-message {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 20px;
+}

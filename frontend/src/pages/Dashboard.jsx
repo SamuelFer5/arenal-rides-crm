@@ -6,6 +6,7 @@ import {
 import { bookingsApi } from '../api/bookings';
 import { reportsApi } from '../api/reports';
 import KpiCard from '../components/KpiCard';
+import KpiDetailModal from '../components/KpiDetailModal';
 import StatusBadge from '../components/StatusBadge';
 import { money, moneyK, fmtDate } from '../utils/format';
 import './Dashboard.css';
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [kpiDetail, setKpiDetail] = useState(null); // 'rack' | 'net' | 'profit' | 'status' | null
 
   useEffect(() => {
     let active = true;
@@ -66,13 +68,28 @@ export default function Dashboard() {
       <div className="app-content">
         <div className="app-content-inner">
           <div className="kpi-grid">
-            <KpiCard label="Ingresos (rack)" value={money(totals.rack)} sub={`${totals.total} reservas totales`} />
-            <KpiCard label="Costo (net)" value={money(totals.net)} />
-            <KpiCard label="Utilidad" value={money(totals.profit)} color="#1E7A4C" />
+            <KpiCard
+              label="Ingresos (rack)"
+              value={money(totals.rack)}
+              sub={`${totals.total} reservas totales`}
+              onClick={() => setKpiDetail('rack')}
+            />
+            <KpiCard
+              label="Costo (net)"
+              value={money(totals.net)}
+              onClick={() => setKpiDetail('net')}
+            />
+            <KpiCard
+              label="Utilidad"
+              value={money(totals.profit)}
+              color="#1E7A4C"
+              onClick={() => setKpiDetail('profit')}
+            />
             <KpiCard
               label="Estado de reservas"
               value={`${totals.confirmed} confirmadas`}
               sub={`${totals.pending} pendientes · ${totals.canceled} canceladas`}
+              onClick={() => setKpiDetail('status')}
             />
           </div>
 
@@ -87,9 +104,9 @@ export default function Dashboard() {
                       <stop offset="100%" stopColor="#274C66" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#EFF0EC" vertical={false} />
-                  <XAxis dataKey="month" tickFormatter={(m) => m.slice(0, 3)} tick={{ fontSize: 11, fill: '#8A958C' }} axisLine={false} tickLine={false} />
-                  <YAxis tickFormatter={moneyK} tick={{ fontSize: 11, fill: '#8A958C' }} axisLine={false} tickLine={false} width={48} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-soft)" vertical={false} />
+                  <XAxis dataKey="month" tickFormatter={(m) => m.slice(0, 3)} tick={{ fontSize: 11, fill: 'var(--text-faint)' }} axisLine={false} tickLine={false} />
+                  <YAxis tickFormatter={moneyK} tick={{ fontSize: 11, fill: 'var(--text-faint)' }} axisLine={false} tickLine={false} width={48} />
                   <Tooltip formatter={(v) => money(v)} labelStyle={{ fontWeight: 600 }} />
                   <Area type="monotone" dataKey="rack" stroke="#274C66" fill="url(#rackGrad)" strokeWidth={2} name="Ingresos" />
                 </AreaChart>
@@ -115,6 +132,15 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {kpiDetail && (
+        <KpiDetailModal
+          type={kpiDetail}
+          monthly={monthly}
+          bookings={bookings}
+          onClose={() => setKpiDetail(null)}
+        />
+      )}
     </>
   );
 }

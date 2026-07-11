@@ -6,6 +6,13 @@
   padding: 18px 20px;
   flex: 1;
   min-width: 0;
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.kpi-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(39, 76, 102, 0.1);
 }
 
 .kpi-label {
@@ -52,4 +59,16 @@
   color: var(--text-faint);
   margin-top: 6px;
   font-weight: 500;
+}
+
+.kpi-click-hint {
+  font-size: 10.5px;
+  color: var(--text-faint);
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.kpi-card:hover .kpi-click-hint {
+  opacity: 1;
 }

@@ -1,0 +1,141 @@
+/* src/components/UserMenu.css */
+.usermenu-wrapper {
+  position: relative;
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.usermenu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 8px;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.usermenu-trigger:hover { background: var(--bg-app); }
+
+.usermenu-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11.5px;
+  flex-shrink: 0;
+}
+
+.usermenu-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.usermenu-name {
+  font-weight: 600;
+  font-size: 12.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-main);
+}
+
+.usermenu-role {
+  font-size: 11px;
+  color: var(--text-faint);
+}
+
+.usermenu-chevron {
+  flex-shrink: 0;
+  color: var(--text-faint);
+}
+
+/* Dropdown */
+.usermenu-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(22, 32, 26, 0.15);
+  z-index: 60;
+  animation: fadein 0.12s ease;
+  padding: 6px;
+}
+
+.usermenu-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 10px 8px;
+}
+
+.usermenu-avatar-lg {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.usermenu-dropdown-name {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--text-main);
+}
+
+.usermenu-dropdown-email {
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+.usermenu-divider {
+  height: 1px;
+  background: var(--border-soft);
+  margin: 4px 6px;
+}
+
+.usermenu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  text-align: left;
+}
+
+.usermenu-item:hover { background: var(--bg-app); }
+
+.usermenu-item svg { color: var(--text-faint); flex-shrink: 0; }
+
+.usermenu-item-danger { color: #B23A48; }
+.usermenu-item-danger svg { color: #B23A48; }
+.usermenu-item-danger:hover { background: #FBEAEC; }
+
+.usermenu-toggle-indicator {
+  margin-left: auto;
+  font-size: 14px;
+}

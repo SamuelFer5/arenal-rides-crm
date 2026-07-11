@@ -1,8 +1,7 @@
 // src/components/Sidebar.jsx
-import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import ChangePasswordModal from './ChangePasswordModal';
+import UserMenu from './UserMenu';
 import logo from '../assets/logo.png';
 import './Sidebar.css';
 
@@ -16,8 +15,7 @@ const NAV_ITEMS = [
 ];
 
 export default function Sidebar() {
-  const { user, logout } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
+  const { user } = useAuth();
 
   return (
     <aside className="sidebar">
@@ -51,35 +49,7 @@ export default function Sidebar() {
         )}
       </nav>
 
-      <div className="sidebar-footer">
-        <button
-          className="sidebar-userbtn"
-          onClick={() => setShowPassword(true)}
-          title="Cambiar mi contraseña"
-        >
-          <div
-            className="sidebar-avatar"
-            style={{ background: user?.color || '#5C675E' }}
-          >
-            {user?.initials}
-          </div>
-          <div className="sidebar-userinfo">
-            <div className="sidebar-username">{user?.name}</div>
-            <div className="sidebar-userrole">
-              {user?.role === 'admin' ? 'Administrador' : 'Empleado'}
-            </div>
-          </div>
-        </button>
-        <button className="sidebar-logout" title="Cerrar sesión" onClick={logout}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-            <path d="M16 17l5-5-5-5" />
-            <path d="M21 12H9" />
-          </svg>
-        </button>
-      </div>
-
-      {showPassword && <ChangePasswordModal onClose={() => setShowPassword(false)} />}
+      <UserMenu />
     </aside>
   );
 }

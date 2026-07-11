@@ -26,6 +26,26 @@
   --warn-dot: #C99A2E;
 }
 
+/* Modo oscuro */
+[data-theme="dark"] {
+  --bg-app: #111714;
+  --bg-card: #1A1F1C;
+  --border: #2A302C;
+  --border-soft: #232923;
+
+  --text-main: #E8EDE9;
+  --text-muted: #A3AEA5;
+  --text-faint: #6B766D;
+  --text-faint-2: #586059;
+
+  --accent-soft: #1C2F3D;
+
+  --danger-bg: #2D1A1D;
+  --danger-text: #E8717D;
+  --warn-bg: #2D2714;
+  --warn-text: #D4A93E;
+}
+
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 
@@ -42,6 +62,59 @@ body {
 input, select, button, textarea { font-family: inherit; }
 
 button { cursor: pointer; }
+
+/* Modo oscuro: inputs y selects */
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  background: #232923;
+  border-color: #2A302C;
+  color: #E8EDE9;
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] select:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: var(--accent);
+  background: #1A1F1C;
+}
+
+[data-theme="dark"] .modal-card,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .detail-panel {
+  background: #1A1F1C;
+}
+
+[data-theme="dark"] .profit-readonly {
+  background: #162118 !important;
+}
+
+[data-theme="dark"] .login-card {
+  background: #1A1F1C;
+  border-color: #2A302C;
+}
+
+[data-theme="dark"] .login-form input {
+  background: #232923;
+}
+
+[data-theme="dark"] .bookings-table tbody tr:hover,
+[data-theme="dark"] .expenses-table tr:hover {
+  background: #1E2420;
+}
+
+[data-theme="dark"] .icon-btn {
+  background: #232923;
+  border-color: #2A302C;
+}
+
+[data-theme="dark"] .admin-toggle-btn,
+[data-theme="dark"] .admin-role-select,
+[data-theme="dark"] .exp-icon-btn {
+  background: #232923;
+  border-color: #2A302C;
+  color: #A3AEA5;
+}
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
