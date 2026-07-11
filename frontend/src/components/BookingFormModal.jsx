@@ -101,16 +101,19 @@ export default function BookingFormModal({ booking, onClose, onSave, saving, err
           </div>
 
           <div className="form-row">
-            <label>Rack ($)
+            <label>Rack - Precio cliente ($)
               <input type="number" step="0.01" value={form.rack} onChange={(e) => set('rack', e.target.value)} />
             </label>
-            <label>Net ($)
+            <label>Net - Pago conductor ($)
               <input type="number" step="0.01" value={form.net} onChange={(e) => set('net', e.target.value)} />
             </label>
             <label>Depósito ($)
               <input type="number" step="0.01" value={form.deposit} onChange={(e) => set('deposit', e.target.value)} />
             </label>
-            <label>Utilidad
+          </div>
+
+          <div className="form-row">
+            <label>Utilidad (calculada)
               <input value={`$${profit.toFixed(2)}`} disabled className="profit-readonly" />
             </label>
           </div>

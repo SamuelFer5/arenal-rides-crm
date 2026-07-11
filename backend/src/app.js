@@ -9,6 +9,7 @@ const bookingRoutes = require('./routes/bookingRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const userRoutes = require('./routes/userRoutes');
 const voucherRoutes = require('./routes/voucherRoutes');
+const driverRoutes = require('./routes/driverRoutes');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 
 const app = express();
@@ -44,6 +45,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/vouchers', voucherRoutes);
+app.use('/api/drivers', driverRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

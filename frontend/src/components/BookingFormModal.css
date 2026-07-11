@@ -13,9 +13,9 @@
 .modal-card {
   background: #fff;
   border-radius: 16px;
-  width: 680px;
+  width: 740px;
   max-width: 95vw;
-  max-height: 90vh;
+  max-height: 92vh;
   display: flex;
   flex-direction: column;
   box-shadow: 0 20px 60px rgba(22, 32, 26, 0.25);

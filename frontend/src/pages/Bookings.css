@@ -33,9 +33,10 @@
 }
 
 .bookings-table tbody tr:last-child td { border-bottom: none; }
-.bookings-table tbody tr:hover { background: #FAFBF8; }
+.bookings-table tbody tr:hover { background: #FAFBF8; cursor: pointer; }
 
 .row-locked { background: #FFFBEF; }
+.row-selected { background: var(--accent-soft) !important; }
 
 .cell-main { font-weight: 600; }
 .cell-faint {

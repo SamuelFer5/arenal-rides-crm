@@ -4,6 +4,7 @@ import { bookingsApi, downloadVoucher } from '../api/bookings';
 import Header from '../components/Header';
 import StatusBadge from '../components/StatusBadge';
 import BookingFormModal from '../components/BookingFormModal';
+import BookingDetail from '../components/BookingDetail';
 import { useDebounce } from '../hooks/useDebounce';
 import { money, fmtDate, MONTHS, monthFromDate } from '../utils/format';
 import { useAuth } from '../context/AuthContext';
@@ -15,14 +16,13 @@ export default function Bookings() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
-  // Arranca en el mes actual; si no hay datos ahí, el usuario cambia el selector.
-  // Para el negocio real esto tiene sentido (ven el mes en curso primero).
   const [month, setMonth] = useState(MONTHS[new Date().getMonth()]);
   const debouncedSearch = useDebounce(search, 250);
 
-  const [editing, setEditing] = useState(null); // null = cerrado, {} = nuevo, {...} = editar
+  const [editing, setEditing] = useState(null);
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
+  const [viewing, setViewing] = useState(null); // Reserva seleccionada para el panel de detalle
 
   const load = useCallback(() => {
     setLoading(true);
@@ -55,6 +55,7 @@ export default function Bookings() {
     try {
       const res = await bookingsApi.acquireLock(booking.id);
       setEditing(res.booking);
+      setViewing(null); // Cerrar detalle si estaba abierto
     } catch (err) {
       setError(err.message);
     }
@@ -94,13 +95,12 @@ export default function Bookings() {
     if (!window.confirm(`¿Eliminar la reserva de ${booking.customer}? Esta acción no se puede deshacer.`)) return;
     try {
       await bookingsApi.remove(booking.id);
+      setViewing(null);
       load();
     } catch (err) {
       alert(err.message);
     }
   }
-
-  const canManage = (b) => user?.role === 'admin' || b.created_by === user?.id;
 
   return (
     <>
@@ -129,19 +129,24 @@ export default function Bookings() {
                   <th>Conductor</th>
                   <th>Estado</th>
                   <th className="num">Rack</th>
+                  <th className="num">Net</th>
                   <th className="num">Utilidad</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 {loading && (
-                  <tr><td colSpan={9} className="empty-row">Cargando…</td></tr>
+                  <tr><td colSpan={10} className="empty-row">Cargando…</td></tr>
                 )}
                 {!loading && filtered.length === 0 && (
-                  <tr><td colSpan={9} className="empty-row">No hay reservas que coincidan.</td></tr>
+                  <tr><td colSpan={10} className="empty-row">No hay reservas que coincidan.</td></tr>
                 )}
                 {!loading && filtered.map((b) => (
-                  <tr key={b.id} className={b.locked_by ? 'row-locked' : ''}>
+                  <tr
+                    key={b.id}
+                    className={`booking-row ${b.locked_by ? 'row-locked' : ''} ${viewing?.id === b.id ? 'row-selected' : ''}`}
+                    onClick={() => setViewing(b)}
+                  >
                     <td className="mono">{fmtDate(b.date)}</td>
                     <td>
                       <div className="cell-main">{b.customer}</div>
@@ -156,18 +161,13 @@ export default function Bookings() {
                     <td>{b.driver || '—'}</td>
                     <td><StatusBadge status={b.status} complete={b.complete} /></td>
                     <td className="num mono">{money(b.rack)}</td>
+                    <td className="num mono">{money(b.net)}</td>
                     <td className="num mono profit-cell">{money(b.profit)}</td>
-                    <td className="actions-cell">
+                    <td className="actions-cell" onClick={(e) => e.stopPropagation()}>
                       <button className="icon-btn" title="Voucher conductor" onClick={() => downloadVoucher(b.id, 'driver').catch(e => alert(e.message))}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M12 18v-6"/><path d="M9 15l3 3 3-3"/></svg>
                       </button>
-                      <button className="icon-btn" title="Voucher cliente" onClick={() => downloadVoucher(b.id, 'client').catch(e => alert(e.message))}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
-                      </button>
                       <button className="icon-btn" title="Editar" onClick={() => openEdit(b)}>✎</button>
-                      {canManage(b) && (
-                        <button className="icon-btn danger" title="Eliminar" onClick={() => handleDelete(b)}>🗑</button>
-                      )}
                     </td>
                   </tr>
                 ))}
@@ -177,6 +177,16 @@ export default function Bookings() {
         </div>
       </div>
 
+      {/* Panel lateral de detalle */}
+      {viewing && (
+        <BookingDetail
+          booking={viewing}
+          onClose={() => setViewing(null)}
+          onEdit={() => openEdit(viewing)}
+        />
+      )}
+
+      {/* Modal de crear/editar */}
       {editing && (
         <BookingFormModal
           booking={editing.__new ? null : editing}
