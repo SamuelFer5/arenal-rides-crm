@@ -9,6 +9,7 @@ router.use(requireAuth);
 
 router.get('/', userController.list);
 router.post('/change-password', userController.changePassword);
+router.patch('/profile', userController.updateProfile);
 router.get('/audit-log', requireRole('admin'), userController.auditLog);
 router.patch('/:id/active', requireRole('admin'), userController.toggleActive);
 router.patch('/:id/role', requireRole('admin'), userController.setRole);

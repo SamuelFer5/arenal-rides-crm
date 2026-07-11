@@ -49,6 +49,15 @@ const userModel = {
     );
     return res.rows[0] || null;
   },
+
+  async updateName(id, name) {
+    const initials = name.trim().split(' ').filter(Boolean).slice(0, 2).map((p) => p[0].toUpperCase()).join('');
+    const res = await query(
+      'UPDATE users SET name = $2, initials = $3 WHERE id = $1 RETURNING *',
+      [id, name.trim(), initials]
+    );
+    return res.rows[0] || null;
+  },
 };
 
 module.exports = userModel;

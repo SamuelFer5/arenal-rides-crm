@@ -1,7 +1,7 @@
 /* src/pages/Drivers.css */
 .drivers-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 14px;
 }
 
@@ -10,6 +10,18 @@
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 16px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.driver-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 12px rgba(39, 76, 102, 0.08);
+}
+
+.driver-selected {
+  border-color: var(--accent) !important;
+  background: var(--accent-soft) !important;
 }
 
 .driver-card-top {
@@ -33,15 +45,24 @@
   flex-shrink: 0;
 }
 
-.driver-name {
+.driver-name { font-weight: 700; font-size: 13.5px; }
+.driver-trips { font-size: 11.5px; color: var(--text-faint); }
+
+.driver-pay-badge {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
   font-weight: 700;
-  font-size: 13.5px;
+  flex-shrink: 0;
 }
 
-.driver-trips {
-  font-size: 11.5px;
-  color: var(--text-faint);
-}
+.driver-pay-badge.overdue { background: #FBEAEC; color: #B23A48; }
+.driver-pay-badge.pending { background: var(--warn-bg); color: var(--warn-text); }
 
 .driver-bar-track {
   height: 6px;
@@ -51,16 +72,9 @@
   margin-bottom: 12px;
 }
 
-.driver-bar-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 100px;
-}
+.driver-bar-fill { height: 100%; background: var(--accent); border-radius: 100px; }
 
-.driver-stats {
-  display: flex;
-  justify-content: space-between;
-}
+.driver-stats { display: flex; justify-content: space-between; }
 
 .driver-stat-label {
   font-size: 10.5px;
@@ -78,3 +92,55 @@
 }
 
 .driver-stat-net { color: var(--text-faint); }
+
+/* Payment tracking cards */
+.driver-payment-cards {
+  display: flex;
+  gap: 10px;
+}
+
+.driver-payment-card {
+  flex: 1;
+  padding: 14px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.driver-payment-card.overdue { background: #FBEAEC; color: #B23A48; }
+.driver-payment-card.pending { background: var(--warn-bg); color: var(--warn-text); }
+.driver-payment-card.paid { background: #E5F3EA; color: #1E7A4C; }
+
+.driver-payment-amount {
+  font-family: 'Spline Sans Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.driver-payment-label { font-size: 12px; font-weight: 700; }
+.driver-payment-count { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+
+/* Trip list */
+.driver-trips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.driver-trip-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.driver-trip-item:last-child { border-bottom: none; }
+
+.driver-trip-date { font-size: 11.5px; font-weight: 600; color: var(--text-muted); width: 80px; flex-shrink: 0; }
+.driver-trip-info { flex: 1; min-width: 0; }
+.driver-trip-customer { font-size: 13px; font-weight: 600; }
+.driver-trip-route { font-size: 11.5px; color: var(--text-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.driver-trip-amounts { font-weight: 700; font-size: 13px; flex-shrink: 0; }

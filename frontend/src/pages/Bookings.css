@@ -3,7 +3,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: 14px;
-  overflow: hidden;
+  overflow-x: auto;
 }
 
 .bookings-table {
@@ -61,10 +61,12 @@
 
 .actions-cell {
   display: flex;
-  gap: 4px;
+  gap: 5px;
   justify-content: flex-end;
   flex-shrink: 0;
-  min-width: 90px;
+  min-width: 100px;
+  white-space: nowrap;
+  padding-right: 16px !important;
 }
 
 .icon-btn {

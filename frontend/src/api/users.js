@@ -8,5 +8,6 @@ export const usersApi = {
   create: (data) => api.post('/users', data),
   changePassword: (currentPassword, newPassword) =>
     api.post('/users/change-password', { currentPassword, newPassword }),
+  updateProfile: (data) => api.patch('/users/profile', data),
   auditLog: (limit) => api.get('/users/audit-log', { limit }),
 };

@@ -116,6 +116,102 @@ button { cursor: pointer; }
   color: #A3AEA5;
 }
 
+/* Header en dark mode */
+[data-theme="dark"] .app-header {
+  background: rgba(26, 31, 28, 0.92);
+  border-bottom-color: #2A302C;
+}
+
+[data-theme="dark"] .app-header-search {
+  background: #232923;
+  border-color: #2A302C;
+}
+
+[data-theme="dark"] .app-header-search input {
+  color: #E8EDE9;
+}
+
+[data-theme="dark"] .app-header-month {
+  background: #232923;
+  border-color: #2A302C;
+  color: #E8EDE9;
+}
+
+/* Cards y tablas en dark mode */
+[data-theme="dark"] .kpi-card,
+[data-theme="dark"] .dash-chart-card,
+[data-theme="dark"] .dash-list-card,
+[data-theme="dark"] .expenses-card,
+[data-theme="dark"] .admin-card,
+[data-theme="dark"] .driver-card,
+[data-theme="dark"] .agenda-calendar,
+[data-theme="dark"] .agenda-detail,
+[data-theme="dark"] .sales-chart-card,
+[data-theme="dark"] .sales-table-card {
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .bookings-table-card {
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .bookings-table thead th {
+  background: #151A17;
+}
+
+/* Sidebar en dark mode */
+[data-theme="dark"] .sidebar {
+  background: #151A17;
+  border-right-color: #2A302C;
+}
+
+[data-theme="dark"] .sidebar-link:hover {
+  background: #1E2420;
+}
+
+[data-theme="dark"] .usermenu-dropdown {
+  background: #1E2420;
+  border-color: #2A302C;
+}
+
+[data-theme="dark"] .usermenu-item:hover {
+  background: #283028;
+}
+
+/* Agenda en dark mode */
+[data-theme="dark"] .agenda-cell {
+  background: #1E2420;
+  border-color: #2A302C;
+}
+
+[data-theme="dark"] .agenda-cell.has-items {
+  background: var(--bg-card);
+}
+
+/* KPI detail modal en dark mode */
+[data-theme="dark"] .kpi-detail-card {
+  background: var(--bg-card);
+}
+
+/* Detail panel en dark mode */
+[data-theme="dark"] .detail-finances .detail-field {
+  background: #232923;
+}
+
+/* Btn secondary en dark mode */
+[data-theme="dark"] .btn-secondary {
+  background: #232923;
+  border-color: #2A302C;
+  color: #A3AEA5;
+}
+
+[data-theme="dark"] .exp-add-btn,
+[data-theme="dark"] .admin-new-btn {
+  background: var(--accent);
+}
+
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-thumb {
   background: #D7DCD3;

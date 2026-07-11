@@ -1,4 +1,5 @@
 // src/components/KpiDetailModal.jsx
+import { useState } from 'react';
 import { money } from '../utils/format';
 import './KpiDetailModal.css';
 
@@ -102,37 +103,26 @@ export default function KpiDetailModal({ type, monthly, bookings, onClose }) {
             {pending.length > 0 && (
               <>
                 <h3>Reservas pendientes</h3>
-                <table className="kpi-detail-table">
-                  <thead><tr><th>Fecha</th><th>Cliente</th><th>Servicio</th><th className="num">Rack</th></tr></thead>
-                  <tbody>
-                    {pending.slice(0, 20).map((b) => (
-                      <tr key={b.id}>
-                        <td className="mono">{String(b.date).slice(0, 10)}</td>
-                        <td>{b.customer}</td>
-                        <td className="cell-faint">{b.service || '—'}</td>
-                        <td className="num mono">{money(b.rack)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {pending.length > 20 && <p className="kpi-more">y {pending.length - 20} más…</p>}
+                <ExpandableList items={pending} renderRow={(b) => (
+                  <tr key={b.id}>
+                    <td className="mono">{String(b.date).slice(0, 10)}</td>
+                    <td>{b.customer}</td>
+                    <td className="cell-faint">{b.service || '—'}</td>
+                    <td className="num mono">{money(b.rack)}</td>
+                  </tr>
+                )} headers={['Fecha', 'Cliente', 'Servicio', 'Rack']} />
               </>
             )}
             {canceled.length > 0 && (
               <>
                 <h3>Últimas cancelaciones</h3>
-                <table className="kpi-detail-table">
-                  <thead><tr><th>Fecha</th><th>Cliente</th><th>Servicio</th></tr></thead>
-                  <tbody>
-                    {canceled.slice(0, 10).map((b) => (
-                      <tr key={b.id}>
-                        <td className="mono">{String(b.date).slice(0, 10)}</td>
-                        <td>{b.customer}</td>
-                        <td className="cell-faint">{b.service || '—'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <ExpandableList items={canceled} renderRow={(b) => (
+                  <tr key={b.id}>
+                    <td className="mono">{String(b.date).slice(0, 10)}</td>
+                    <td>{b.customer}</td>
+                    <td className="cell-faint">{b.service || '—'}</td>
+                  </tr>
+                )} headers={['Fecha', 'Cliente', 'Servicio']} />
               </>
             )}
           </>
@@ -187,5 +177,30 @@ function ServiceRanking({ bookings }) {
         ))}
       </tbody>
     </table>
+  );
+}
+
+function ExpandableList({ items, renderRow, headers, initialCount = 20 }) {
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? items : items.slice(0, initialCount);
+  const remaining = items.length - initialCount;
+
+  return (
+    <>
+      <table className="kpi-detail-table">
+        <thead><tr>{headers.map((h, i) => <th key={i} className={i === headers.length - 1 ? 'num' : ''}>{h}</th>)}</tr></thead>
+        <tbody>{visible.map(renderRow)}</tbody>
+      </table>
+      {remaining > 0 && !showAll && (
+        <button className="kpi-expand-btn" onClick={() => setShowAll(true)}>
+          Ver {remaining} más ▼
+        </button>
+      )}
+      {showAll && items.length > initialCount && (
+        <button className="kpi-expand-btn" onClick={() => setShowAll(false)}>
+          Mostrar menos ▲
+        </button>
+      )}
+    </>
   );
 }

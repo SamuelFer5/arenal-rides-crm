@@ -30,6 +30,15 @@ const userController = {
     res.json({ ok: true });
   }),
 
+  updateProfile: asyncHandler(async (req, res) => {
+    const { name } = req.body;
+    if (!name || !name.trim()) return res.status(400).json({ error: 'El nombre es obligatorio.' });
+    const userModel = require('../models/userModel');
+    const updated = await userModel.updateName(req.user.id, name);
+    if (!updated) return res.status(404).json({ error: 'Usuario no encontrado.' });
+    res.json({ user: userService.toPublic(updated) });
+  }),
+
   auditLog: asyncHandler(async (req, res) => {
     const limit = req.query.limit ? parseInt(req.query.limit, 10) : 30;
     const log = await auditModel.recent(limit);

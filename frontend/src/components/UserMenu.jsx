@@ -8,6 +8,7 @@ export default function UserMenu() {
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showEditName, setShowEditName] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
     try { return localStorage.getItem('arenal_dark') === 'true'; } catch { return false; }
   });
@@ -66,6 +67,11 @@ export default function UserMenu() {
             Cambiar contraseña
           </button>
 
+          <button className="usermenu-item" onClick={() => { setOpen(false); setShowEditName(true); }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Editar perfil
+          </button>
+
           <button className="usermenu-item" onClick={toggleDark}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               {darkMode
@@ -89,6 +95,58 @@ export default function UserMenu() {
       )}
 
       {showPassword && <ChangePasswordModal onClose={() => setShowPassword(false)} />}
+      {showEditName && <EditProfileModal user={user} onClose={() => setShowEditName(false)} />}
+    </div>
+  );
+}
+
+function EditProfileModal({ user, onClose }) {
+  const [name, setName] = useState(user?.name || '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!name.trim()) { setError('El nombre no puede estar vacío.'); return; }
+    setSaving(true); setError('');
+    try {
+      const { usersApi } = await import('../api/users');
+      await usersApi.updateProfile({ name: name.trim() });
+      setSuccess(true);
+      setTimeout(() => { onClose(); window.location.reload(); }, 800);
+    } catch (err) { setError(err.message); }
+    finally { setSaving(false); }
+  }
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-card" style={{ width: 400 }} onClick={(e) => e.stopPropagation()}>
+        <div className="modal-header">
+          <h2>Editar perfil</h2>
+          <button className="modal-close" onClick={onClose}>×</button>
+        </div>
+        <form onSubmit={handleSubmit} className="booking-form">
+          <div className="edit-profile-avatar" style={{ background: user?.color || '#5C675E' }}>
+            {user?.initials}
+          </div>
+          <label>Nombre completo
+            <input required value={name} onChange={(e) => setName(e.target.value)} />
+          </label>
+          <label>Correo electrónico
+            <input value={user?.email || ''} disabled style={{ opacity: 0.5 }} />
+            <span className="field-hint">El correo no se puede cambiar.</span>
+          </label>
+          {error && <div className="form-error">{error}</div>}
+          {success && <div className="form-success">Perfil actualizado.</div>}
+          <div className="modal-actions">
+            <button type="button" className="btn-secondary" onClick={onClose}>Cancelar</button>
+            <button type="submit" className="btn-primary" disabled={saving || success}>
+              {saving ? 'Guardando…' : 'Guardar'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
