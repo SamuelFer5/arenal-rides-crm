@@ -2,7 +2,6 @@
 const { query } = require('../config/db');
 
 const driverModel = {
-  /** Todos los conductores (incluye inactivos, para admin) */
   async findAll() {
     const res = await query(`
       SELECT d.*,
@@ -17,7 +16,6 @@ const driverModel = {
     return res.rows;
   },
 
-  /** Solo conductores activos (para dropdowns de selección) */
   async findActive() {
     const res = await query('SELECT id, name FROM drivers WHERE active = true ORDER BY name ASC');
     return res.rows;
@@ -32,6 +30,17 @@ const driverModel = {
     const res = await query(
       'UPDATE drivers SET active = NOT active WHERE id = $1 RETURNING *',
       [id]
+    );
+    return res.rows[0] || null;
+  },
+
+  async setPaymentStatus(id, status) {
+    const updates = status === 'al_dia'
+      ? 'payment_status = $2, last_paid_date = CURRENT_DATE'
+      : 'payment_status = $2';
+    const res = await query(
+      `UPDATE drivers SET ${updates} WHERE id = $1 RETURNING *`,
+      [id, status]
     );
     return res.rows[0] || null;
   },

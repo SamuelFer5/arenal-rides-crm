@@ -102,9 +102,25 @@ export default function BookingDetail({ booking, onClose, onEdit }) {
 
           <div className="detail-section">
             <div className="detail-section-title">Auditoría</div>
-            <div className="detail-meta">
-              {b.created_by_name && <span>Creada por {b.created_by_name}</span>}
-              {b.modified_by_name && <span> · Editada por {b.modified_by_name}</span>}
+            <div className="detail-audit-grid">
+              {b.created_by_name && (
+                <div className="detail-audit-item">
+                  <span className="detail-audit-label">Creada por</span>
+                  <span className="detail-audit-value">{b.created_by_name}</span>
+                </div>
+              )}
+              {b.confirmed_by_name && (
+                <div className="detail-audit-item">
+                  <span className="detail-audit-label">Confirmada por</span>
+                  <span className="detail-audit-value">{b.confirmed_by_name}</span>
+                </div>
+              )}
+              {b.modified_by_name && (
+                <div className="detail-audit-item">
+                  <span className="detail-audit-label">Última edición por</span>
+                  <span className="detail-audit-value">{b.modified_by_name}</span>
+                </div>
+              )}
             </div>
           </div>
 

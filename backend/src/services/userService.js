@@ -74,6 +74,12 @@ const userService = {
     if (!password || password.length < 8) {
       throw new UserError('La contraseña debe tener al menos 8 caracteres.', 400);
     }
+    if (!/[A-Z]/.test(password)) {
+      throw new UserError('La contraseña debe incluir al menos una letra mayúscula.', 400);
+    }
+    if (!/[0-9]/.test(password)) {
+      throw new UserError('La contraseña debe incluir al menos un número.', 400);
+    }
     if (!['admin', 'empleado'].includes(role)) {
       throw new UserError('Rol inválido.', 400);
     }
@@ -105,6 +111,12 @@ const userService = {
   async changeOwnPassword(userId, currentPassword, newPassword) {
     if (!newPassword || newPassword.length < 8) {
       throw new UserError('La nueva contraseña debe tener al menos 8 caracteres.', 400);
+    }
+    if (!/[A-Z]/.test(newPassword)) {
+      throw new UserError('La contraseña debe incluir al menos una letra mayúscula.', 400);
+    }
+    if (!/[0-9]/.test(newPassword)) {
+      throw new UserError('La contraseña debe incluir al menos un número.', 400);
     }
     const user = await userModel.findById(userId);
     if (!user) throw new UserError('Usuario no encontrado.', 404);

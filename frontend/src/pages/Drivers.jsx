@@ -1,75 +1,66 @@
 // src/pages/Drivers.jsx
 import { useEffect, useMemo, useState } from 'react';
-import { reportsApi } from '../api/reports';
+import { driversApi } from '../api/drivers';
 import { bookingsApi } from '../api/bookings';
+import { useAuth } from '../context/AuthContext';
 import { money } from '../utils/format';
 import { useDebounce } from '../hooks/useDebounce';
 import './Drivers.css';
 
 export default function Drivers() {
-  const [drivers, setDrivers] = useState([]);
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const [allDrivers, setAllDrivers] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState(null); // conductor seleccionado para detalle
+  const [selected, setSelected] = useState(null);
   const debouncedSearch = useDebounce(search, 250);
 
-  useEffect(() => {
-    Promise.all([reportsApi.drivers(), bookingsApi.list({})])
-      .then(([d, b]) => { setDrivers(d.drivers); setBookings(b.bookings); })
+  function load() {
+    setLoading(true);
+    Promise.all([driversApi.listAll(), bookingsApi.list({})])
+      .then(([d, b]) => { setAllDrivers(d.drivers); setBookings(b.bookings); })
       .finally(() => setLoading(false));
-  }, []);
+  }
+
+  useEffect(() => { load(); }, []);
 
   const filtered = useMemo(() => {
     const q = debouncedSearch.trim().toLowerCase();
-    const list = q ? drivers.filter((d) => d.driver.toLowerCase().includes(q)) : drivers;
-    return [...list].sort((a, b) => b.rack - a.rack);
-  }, [drivers, debouncedSearch]);
+    const list = q ? allDrivers.filter((d) => d.name.toLowerCase().includes(q)) : allDrivers;
+    return [...list].sort((a, b) => Number(b.total_rack) - Number(a.total_rack));
+  }, [allDrivers, debouncedSearch]);
 
-  const maxRack = filtered.length ? Math.max(...filtered.map((d) => d.rack)) : 1;
+  const maxRack = filtered.length ? Math.max(...filtered.map((d) => Number(d.total_rack))) : 1;
 
-  // Calcular detalle del conductor seleccionado
+  // Determinar estado visual: payment_status de la BD + auto-vencido si >1 mes en pendiente
+  function getVisualStatus(d) {
+    if (d.payment_status === 'al_dia') return 'al_dia';
+    // Si está pendiente, verificar si tiene >1 mes para marcarlo como vencido
+    const now = new Date();
+    const oneMonthAgo = new Date(now); oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    const lastPaid = d.last_paid_date ? new Date(d.last_paid_date) : null;
+    if (!lastPaid || lastPaid < oneMonthAgo) return 'vencido';
+    return 'pendiente';
+  }
+
+  // Detalle del conductor
   const driverDetail = useMemo(() => {
     if (!selected) return null;
     const trips = bookings.filter((b) =>
-      b.driver === selected.driver && !(b.status || '').toLowerCase().includes('cancel')
+      b.driver === selected.name && !(b.status || '').toLowerCase().includes('cancel')
     );
     const totalNet = trips.reduce((s, b) => s + (Number(b.net) || 0), 0);
-
-    // Clasificar por antigüedad de pago
-    const now = new Date();
-    const oneMonthAgo = new Date(now);
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-    const recent = []; // < 1 mes
-    const overdue = []; // > 1 mes
-
-    trips.forEach((b) => {
-      const bDate = new Date(String(b.date).slice(0, 10));
-      if (bDate < oneMonthAgo) overdue.push(b);
-      else recent.push(b);
-    });
-
-    const overdueNet = overdue.reduce((s, b) => s + (Number(b.net) || 0), 0);
-    const recentNet = recent.reduce((s, b) => s + (Number(b.net) || 0), 0);
-
-    return { trips, totalNet, recent, overdue, overdueNet, recentNet };
+    return { trips, totalNet };
   }, [selected, bookings]);
 
-  // Determinar estado de pago de cada conductor
-  function getPaymentStatus(driverName) {
-    const now = new Date();
-    const oneMonthAgo = new Date(now);
-    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-
-    const trips = bookings.filter((b) =>
-      b.driver === driverName && !(b.status || '').toLowerCase().includes('cancel') && Number(b.net) > 0
-    );
-    if (trips.length === 0) return 'none';
-
-    const hasOverdue = trips.some((b) => new Date(String(b.date).slice(0, 10)) < oneMonthAgo);
-    if (hasOverdue) return 'overdue';
-    return 'pending';
+  async function togglePayment(driver) {
+    const newStatus = driver.payment_status === 'al_dia' ? 'pendiente' : 'al_dia';
+    try {
+      await driversApi.setPaymentStatus(driver.id, newStatus);
+      load();
+    } catch (err) { alert(err.message); }
   }
 
   return (
@@ -77,7 +68,7 @@ export default function Drivers() {
       <header className="app-header">
         <div>
           <div className="app-header-title">Conductores</div>
-          <div className="app-header-subtitle">{drivers.length} conductores registrados</div>
+          <div className="app-header-subtitle">{allDrivers.length} conductores registrados</div>
         </div>
         <div className="app-header-actions">
           <div className="app-header-search">
@@ -95,33 +86,35 @@ export default function Drivers() {
           {!loading && (
             <div className="drivers-grid">
               {filtered.map((d) => {
-                const payStatus = getPaymentStatus(d.driver);
+                const vs = getVisualStatus(d);
                 return (
                   <div
-                    className={`driver-card ${selected?.driver === d.driver ? 'driver-selected' : ''}`}
-                    key={d.driver}
+                    className={`driver-card ${selected?.id === d.id ? 'driver-selected' : ''} ${!d.active ? 'driver-frozen' : ''}`}
+                    key={d.id}
                     onClick={() => setSelected(d)}
                   >
                     <div className="driver-card-top">
-                      <div className="driver-avatar">{d.driver.slice(0, 2).toUpperCase()}</div>
+                      <div className="driver-avatar">{d.name.slice(0, 2).toUpperCase()}</div>
                       <div>
-                        <div className="driver-name">{d.driver}</div>
-                        <div className="driver-trips">{d.count} viajes · {d.pax} pax</div>
+                        <div className="driver-name">{d.name}</div>
+                        <div className="driver-trips">{Number(d.trip_count)} viajes</div>
                       </div>
-                      {payStatus === 'overdue' && <span className="driver-pay-badge overdue" title="Pagos con más de 1 mes">!</span>}
-                      {payStatus === 'pending' && <span className="driver-pay-badge pending" title="Pagos pendientes">$</span>}
+                      {d.active && vs === 'vencido' && <span className="driver-pay-badge overdue" title="Pago vencido (>1 mes)">!</span>}
+                      {d.active && vs === 'pendiente' && <span className="driver-pay-badge pending" title="Pago pendiente">$</span>}
+                      {d.active && vs === 'al_dia' && <span className="driver-pay-badge paid" title="Al día">✓</span>}
+                      {!d.active && <span className="driver-pay-badge frozen" title="Congelado">✕</span>}
                     </div>
                     <div className="driver-bar-track">
-                      <div className="driver-bar-fill" style={{ width: `${(d.rack / maxRack) * 100}%` }} />
+                      <div className="driver-bar-fill" style={{ width: `${(Number(d.total_rack) / maxRack) * 100}%` }} />
                     </div>
                     <div className="driver-stats">
                       <div>
                         <div className="driver-stat-label">Rack generado</div>
-                        <div className="driver-stat-value">{money(d.rack)}</div>
+                        <div className="driver-stat-value">{money(Number(d.total_rack))}</div>
                       </div>
                       <div>
                         <div className="driver-stat-label">Net pagado</div>
-                        <div className="driver-stat-value driver-stat-net">{money(d.net)}</div>
+                        <div className="driver-stat-value driver-stat-net">{money(Number(d.total_net))}</div>
                       </div>
                     </div>
                   </div>
@@ -132,26 +125,27 @@ export default function Drivers() {
         </div>
       </div>
 
-      {/* Panel lateral de detalle del conductor */}
+      {/* Panel lateral de detalle */}
       {selected && driverDetail && (
         <div className="detail-overlay" onClick={() => setSelected(null)}>
           <div className="detail-panel" onClick={(e) => e.stopPropagation()}>
             <div className="detail-header">
               <div>
-                <div className="detail-title">{selected.driver}</div>
-                <div className="detail-subtitle">{selected.count} viajes · {selected.pax} pasajeros</div>
+                <div className="detail-title">{selected.name}</div>
+                <div className="detail-subtitle">
+                  {Number(selected.trip_count)} viajes · {selected.active ? 'Activo' : 'Congelado'}
+                </div>
               </div>
               <button className="detail-close" onClick={() => setSelected(null)}>×</button>
             </div>
 
             <div className="detail-body">
-              {/* Resumen financiero */}
               <div className="detail-section detail-finances">
                 <div className="detail-section-title">Resumen financiero</div>
                 <div className="detail-row">
                   <div className="detail-field">
                     <span className="detail-label">Rack generado</span>
-                    <span className="detail-value mono">{money(selected.rack)}</span>
+                    <span className="detail-value mono">{money(Number(selected.total_rack))}</span>
                   </div>
                   <div className="detail-field">
                     <span className="detail-label">Total Net (a pagar)</span>
@@ -160,51 +154,54 @@ export default function Drivers() {
                 </div>
               </div>
 
-              {/* Estado de pagos */}
+              {/* Estado de pago - solo admin puede cambiar */}
               <div className="detail-section">
-                <div className="detail-section-title">Estado de pagos</div>
+                <div className="detail-section-title">Estado de pago</div>
                 <div className="driver-payment-cards">
-                  {driverDetail.overdueNet > 0 && (
-                    <div className="driver-payment-card overdue">
-                      <div className="driver-payment-amount">{money(driverDetail.overdueNet)}</div>
-                      <div className="driver-payment-label">Vencido (&gt;1 mes)</div>
-                      <div className="driver-payment-count">{driverDetail.overdue.length} viajes</div>
-                    </div>
-                  )}
-                  {driverDetail.recentNet > 0 && (
-                    <div className="driver-payment-card pending">
-                      <div className="driver-payment-amount">{money(driverDetail.recentNet)}</div>
-                      <div className="driver-payment-label">Pendiente</div>
-                      <div className="driver-payment-count">{driverDetail.recent.length} viajes</div>
-                    </div>
-                  )}
-                  {driverDetail.totalNet === 0 && (
+                  {getVisualStatus(selected) === 'al_dia' && (
                     <div className="driver-payment-card paid">
-                      <div className="driver-payment-amount">$0</div>
-                      <div className="driver-payment-label">Sin deuda</div>
+                      <div className="driver-payment-label">✓ Al día</div>
+                      {selected.last_paid_date && <div className="driver-payment-count">Último pago: {String(selected.last_paid_date).slice(0, 10)}</div>}
+                    </div>
+                  )}
+                  {getVisualStatus(selected) === 'pendiente' && (
+                    <div className="driver-payment-card pending">
+                      <div className="driver-payment-label">$ Pendiente</div>
+                    </div>
+                  )}
+                  {getVisualStatus(selected) === 'vencido' && (
+                    <div className="driver-payment-card overdue">
+                      <div className="driver-payment-label">! Vencido</div>
+                      <div className="driver-payment-count">Más de 1 mes sin pagar</div>
                     </div>
                   )}
                 </div>
+                {isAdmin && (
+                  <button
+                    className={`driver-pay-toggle ${selected.payment_status === 'al_dia' ? 'is-paid' : 'is-pending'}`}
+                    onClick={() => togglePayment(selected)}
+                  >
+                    {selected.payment_status === 'al_dia' ? 'Marcar como pendiente' : 'Marcar como pagado'}
+                  </button>
+                )}
               </div>
 
-              {/* Viajes recientes */}
+              {/* Viajes */}
               <div className="detail-section">
-                <div className="detail-section-title">Últimos viajes ({driverDetail.trips.length})</div>
+                <div className="detail-section-title">Viajes ({driverDetail.trips.length})</div>
                 <div className="driver-trips-list">
-                  {driverDetail.trips.slice(0, 30).map((b) => (
+                  {driverDetail.trips.slice(0, 40).map((b) => (
                     <div className="driver-trip-item" key={b.id}>
                       <div className="driver-trip-date mono">{String(b.date).slice(0, 10)}</div>
                       <div className="driver-trip-info">
                         <div className="driver-trip-customer">{b.customer}</div>
                         <div className="driver-trip-route">{b.pickup} → {b.dropoff}</div>
                       </div>
-                      <div className="driver-trip-amounts">
-                        <div className="mono">{money(b.net)}</div>
-                      </div>
+                      <div className="driver-trip-amounts mono">{money(b.net)}</div>
                     </div>
                   ))}
-                  {driverDetail.trips.length > 30 && (
-                    <div className="dash-empty">y {driverDetail.trips.length - 30} viajes más…</div>
+                  {driverDetail.trips.length > 40 && (
+                    <div className="dash-empty">y {driverDetail.trips.length - 40} viajes más…</div>
                   )}
                 </div>
               </div>

@@ -145,6 +145,31 @@
   color: var(--text-faint);
 }
 
+.detail-audit-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.detail-audit-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.detail-audit-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-faint-2);
+  text-transform: uppercase;
+}
+
+.detail-audit-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
 .detail-vouchers {
   display: flex;
   gap: 10px;

@@ -24,6 +24,19 @@ const driverController = {
     res.json({ driver });
   }),
 
+  setPaymentStatus: asyncHandler(async (req, res) => {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Solo admin puede cambiar el estado de pago.' });
+    }
+    const { status } = req.body;
+    if (!['al_dia', 'pendiente'].includes(status)) {
+      return res.status(400).json({ error: 'Estado inválido. Usar: al_dia o pendiente.' });
+    }
+    const driver = await driverModel.setPaymentStatus(req.params.id, status);
+    if (!driver) return res.status(404).json({ error: 'Conductor no encontrado.' });
+    res.json({ driver });
+  }),
+
   create: asyncHandler(async (req, res) => {
     const { name } = req.body;
     if (!name || !name.trim()) {

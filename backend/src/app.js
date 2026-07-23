@@ -12,10 +12,14 @@ const voucherRoutes = require('./routes/voucherRoutes');
 const driverRoutes = require('./routes/driverRoutes');
 const financeRoutes = require('./routes/financeRoutes');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
+const { loginLimiter, apiLimiter, MAX_BODY_SIZE, sanitizeBody } = require('./middlewares/security');
 
 const app = express();
 
 app.use(helmet());
+
+// Rate limiting general: máx 200 req/min por IP
+app.use(apiLimiter);
 // CORS: acepta una lista de orígenes separados por coma en FRONTEND_URL.
 // Ejemplo: FRONTEND_URL=http://localhost:5173,https://arenalrides.onrender.com
 // Si no se define, en desarrollo permite cualquier origen.
@@ -34,7 +38,8 @@ app.use(cors({
   },
   credentials: true,
 }));
-app.use(express.json());
+app.use(express.json({ limit: MAX_BODY_SIZE }));
+app.use(sanitizeBody);
 if (process.env.NODE_ENV !== 'test') {
   app.use(morgan('dev'));
 }

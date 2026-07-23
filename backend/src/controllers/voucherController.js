@@ -21,7 +21,7 @@ const voucherController = {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
-    generateVoucher(booking, type, res);
+    generateVoucher(booking, type, res, req.user.name);
   }),
 };
 

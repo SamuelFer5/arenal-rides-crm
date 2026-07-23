@@ -2,7 +2,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import UserMenu from './UserMenu';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.svg';
 import './Sidebar.css';
 
 const NAV_ITEMS = [
@@ -20,10 +20,10 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-brand">
-        <img src={logo} alt="Arenal Rides" className="sidebar-logo" />
+        <img src={logo} alt="Travio" className="sidebar-logo" />
         <div>
-          <div className="sidebar-title">Arenal Rides</div>
-          <div className="sidebar-subtitle">Control de viajes</div>
+          <div className="sidebar-title">Travio</div>
+          <div className="sidebar-subtitle">Gestión de transporte</div>
         </div>
       </div>
 

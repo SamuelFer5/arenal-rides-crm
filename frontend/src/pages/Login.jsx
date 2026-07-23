@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.svg';
 import './Login.css';
 
 export default function Login() {
@@ -30,8 +30,8 @@ export default function Login() {
   return (
     <div className="login-screen">
       <div className="login-card">
-        <img src={logo} alt="Arenal Rides" className="login-logo" />
-        <h1>Arenal Rides</h1>
+        <img src={logo} alt="Travio" className="login-logo" />
+        <h1>Travio</h1>
         <p className="login-subtitle">Inicia sesión para gestionar tus reservas</p>
 
         <form onSubmit={handleSubmit} className="login-form">

@@ -11,5 +11,6 @@ router.get('/', driverController.listAll);
 router.get('/active', driverController.listActive);
 router.post('/', driverController.create);
 router.patch('/:id/active', requireRole('admin'), driverController.toggleActive);
+router.patch('/:id/payment', requireRole('admin'), driverController.setPaymentStatus);
 
 module.exports = router;

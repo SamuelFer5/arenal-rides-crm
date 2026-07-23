@@ -11,12 +11,15 @@ const BASE_SELECT = `
     b.created_at,
     b.modified_by, mu.name AS modified_by_name,
     b.modified_at,
+    b.confirmed_by, cfu.name AS confirmed_by_name,
+    b.confirmed_at,
     b.locked_by, lu.name AS locked_by_name, lu.initials AS locked_by_initials, lu.color AS locked_by_color,
     b.locked_at
   FROM bookings b
   LEFT JOIN drivers d ON d.id = b.driver_id
   LEFT JOIN users cu ON cu.id = b.created_by
   LEFT JOIN users mu ON mu.id = b.modified_by
+  LEFT JOIN users cfu ON cfu.id = b.confirmed_by
   LEFT JOIN users lu ON lu.id = b.locked_by
 `;
 
@@ -88,6 +91,8 @@ const bookingModel = {
         date=$2, time=$3, customer=$4, service=$5, pax=$6, pickup=$7, dropoff=$8,
         status=$9, driver_id=$10, rack=$11, net=$12, profit=$13, deposit=$14,
         phone=$15, notes=$16, modified_by=$17, modified_at=now(),
+        confirmed_by = CASE WHEN $9 = 'Confirmed' AND status != 'Confirmed' THEN $17 ELSE confirmed_by END,
+        confirmed_at = CASE WHEN $9 = 'Confirmed' AND status != 'Confirmed' THEN now() ELSE confirmed_at END,
         locked_by=NULL, locked_at=NULL
        WHERE id=$1`,
       [

@@ -1,5 +1,6 @@
 // src/components/BookingFormModal.jsx
 import { useEffect, useState } from 'react';
+import { driversApi } from '../api/drivers';
 import './BookingFormModal.css';
 
 const EMPTY = {
@@ -9,6 +10,11 @@ const EMPTY = {
 
 export default function BookingFormModal({ booking, onClose, onSave, saving, error }) {
   const [form, setForm] = useState(EMPTY);
+  const [activeDrivers, setActiveDrivers] = useState([]);
+
+  useEffect(() => {
+    driversApi.listActive().then((res) => setActiveDrivers(res.drivers)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (booking) {
@@ -93,7 +99,16 @@ export default function BookingFormModal({ booking, onClose, onSave, saving, err
 
           <div className="form-row">
             <label className="grow">Conductor
-              <input value={form.driver} onChange={(e) => set('driver', e.target.value)} placeholder="Nombre del conductor" />
+              <select value={form.driver} onChange={(e) => set('driver', e.target.value)}>
+                <option value="">— Seleccionar conductor —</option>
+                {activeDrivers.map((d) => (
+                  <option key={d.id} value={d.name}>{d.name}</option>
+                ))}
+                {/* Si el booking actual tiene un conductor que no está en la lista activa, mostrarlo igual */}
+                {form.driver && !activeDrivers.some((d) => d.name === form.driver) && (
+                  <option value={form.driver}>{form.driver} (inactivo)</option>
+                )}
+              </select>
             </label>
             <label>Teléfono
               <input value={form.phone} onChange={(e) => set('phone', e.target.value)} />

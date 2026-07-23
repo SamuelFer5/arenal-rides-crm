@@ -12,8 +12,9 @@ const MUTED = '#5C675E';
  * @param {object} booking - La reserva con sus datos (incluyendo driver)
  * @param {'driver'|'client'} type - Tipo de voucher
  * @param {object} stream - Stream de escritura (res de Express)
+ * @param {string} generatedBy - Nombre del usuario que genera el voucher
  */
-function generateVoucher(booking, type, stream) {
+function generateVoucher(booking, type, stream, generatedBy) {
   const doc = new PDFDocument({
     size: 'A4',
     margin: 50,
@@ -21,7 +22,7 @@ function generateVoucher(booking, type, stream) {
       Title: type === 'driver'
         ? `Orden de Servicio #${booking.id}`
         : `Confirmación de Reserva #${booking.id}`,
-      Author: 'Arenal Rides CRM',
+      Author: 'Travio',
     },
   });
 
@@ -32,13 +33,13 @@ function generateVoucher(booking, type, stream) {
     .fontSize(22)
     .fillColor(ACCENT)
     .font('Helvetica-Bold')
-    .text('Arenal Rides', 50, 50);
+    .text('Travio', 50, 50);
 
   doc
     .fontSize(9)
     .fillColor(MUTED)
     .font('Helvetica')
-    .text('Transporte turístico · Zona Norte, Costa Rica', 50, 76);
+    .text('Gestión de transporte', 50, 76);
 
   // Tipo de documento
   const docTitle = type === 'driver'
@@ -99,7 +100,7 @@ function generateVoucher(booking, type, stream) {
   // ---- Sección dependiente del tipo ----
 
   if (type === 'driver') {
-    // Voucher para conductor: datos operativos, SIN precios
+    // Voucher para conductor: SOLO datos operativos, SIN montos
     doc
       .moveTo(50, y)
       .lineTo(545, y)
@@ -107,7 +108,8 @@ function generateVoucher(booking, type, stream) {
       .stroke();
     y += 20;
 
-    drawField(doc, 'Conductor asignado', booking.driver || 'Por asignar', 50, y, 495);
+    drawField(doc, 'Pasajeros', booking.pax || '—', 50, y);
+    drawField(doc, 'Conductor asignado', booking.driver || 'Por asignar', 250, y);
     y += 40;
 
     drawField(doc, 'Teléfono del cliente', booking.phone || '—', 50, y);
@@ -180,7 +182,7 @@ function generateVoucher(booking, type, stream) {
     .fillColor(MUTED)
     .font('Helvetica')
     .text(
-      `Generado el ${new Date().toLocaleDateString('es-CR')} · Arenal Rides CRM`,
+      `Generado por ${generatedBy || 'Sistema'} el ${new Date().toLocaleDateString('es-CR')} · Travio`,
       50, footerY + 10, { align: 'center', width: 495 }
     );
 

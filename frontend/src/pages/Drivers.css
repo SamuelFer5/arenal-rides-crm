@@ -63,6 +63,10 @@
 
 .driver-pay-badge.overdue { background: #FBEAEC; color: #B23A48; }
 .driver-pay-badge.pending { background: var(--warn-bg); color: var(--warn-text); }
+.driver-pay-badge.paid { background: #E5F3EA; color: #1E7A4C; }
+.driver-pay-badge.frozen { background: #EAEBE7; color: #6B6B6B; }
+
+.driver-frozen { opacity: 0.5; }
 
 .driver-bar-track {
   height: 6px;
@@ -119,6 +123,33 @@
 
 .driver-payment-label { font-size: 12px; font-weight: 700; }
 .driver-payment-count { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+
+.driver-pay-toggle {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.driver-pay-toggle.is-pending {
+  background: #1E7A4C;
+  color: #fff;
+}
+
+.driver-pay-toggle.is-pending:hover { filter: brightness(1.1); }
+
+.driver-pay-toggle.is-paid {
+  background: var(--bg-app);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.driver-pay-toggle.is-paid:hover { background: var(--warn-bg); color: var(--warn-text); }
 
 /* Trip list */
 .driver-trips-list {
